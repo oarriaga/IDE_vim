@@ -4,21 +4,64 @@ call plug#begin('~/.vim/plugged')
 " Shorthand notation fetches from;
 " https://github.com/davidhalter/jedi-vim
 Plug 'davidhalter/jedi-vim'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+" Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 Plug 'vim-syntastic/syntastic'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+" Plug 'SirVer/ultisnips'
+" Plug 'honza/vim-snippets'
 Plug 'itchyny/lightline.vim'
 Plug 'tomasr/molokai'
 Plug 'lervag/vimtex'
+Plug 'ervandew/supertab'
+Plug 'scrooloose/nerdtree'
+" engine ultisnips and the snippets are in honza
+ Plug 'SirVer/ultisnips'
+ Plug 'honza/vim-snippets'
+" Plug 'ajh17/VimCompletesMe'
 " Initialize plugin system
 call plug#end()
 " Call color scheme
 colo molokai
 
+" set relative coordinates
+:set rnu
+
+" snippets 
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" takes extra tabs from snippets
+set sw=4
+" set super-tab from top to bottom
+let g:SuperTabDefaultCompletionType = "<c-n>"
+
+
+" set complete+=kspell
+autocmd FileType latex,tex,md,markdown,text setlocal complete+=kspell
+
+" enable space in normal mode
+" :nnoremap <space> i<space><esc>
+
+" disable arrow keys
+noremap <Up> <NOP>
+noremap <Down> <NOP>
+noremap <Left> <NOP>
+noremap <Right> <NOP>
+
+" easier vim split navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" open nerd tree with Ctrl+n
+map <C-n> :NERDTreeToggle<CR>
+
+
 " Run current python3 script with F9
 " nnoremap <buffer> <F9> :exec '!python3' shellescape(@%, 1)<cr>
 nnoremap <buffer> <F9> :exec '!ipython -i' shellescape(@%, 1)<cr>
+nnoremap <buffer> <F8> :exec '!blender -b -P' shellescape(@%, 1)<cr>
 
 " Set spell check"
 set spell spelllang=en_us
@@ -35,7 +78,7 @@ vnoremap <C-c> "+y
 noremap <C-v> "+p
 
 " Select all text
-map <C-a> <esc>ggVG<CR>
+" map <C-a> <esc>ggVG<CR>
 
 " Automatic reloading of .vimrc
 autocmd! bufwritepost .vimrc source %
@@ -111,43 +154,55 @@ let g:lightline = {
 " Allow tab-completion for directories
 "let g:SuperTabDefaultCompletionType = "context"
 "
+" Added callback option to remove warning in latex
+let g:vimtex_compiler_latexmk = {'callback' : 0}
+
 " Expand trigger 
 "let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsExpandTrigger="<c-j>"
+" let g:UltiSnipsExpandTrigger="<c-j>"
 
 " Take out function preview from YCM
-set completeopt-=preview
+" set completeopt-=preview
 
 " YCM/Jedi-vim variables to work together
 " https://github.com/Valloric/YouCompleteMe/issues/234
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_use_ultisnips_completer = 1
-let g:ycm_seed_identifiers_with_syntax = 1
+" let g:ycm_autoclose_preview_window_after_completion = 1
+" let g:ycm_autoclose_preview_window_after_insertion = 1
+" let g:ycm_use_ultisnips_completer = 1
+" let g:ycm_seed_identifiers_with_syntax = 1
 
+" ---------------------------------------------------------------
+"  jedi-vim
+" ---------------------------------------------------------------
+let g:jedi#popup_select_first=0
 let g:jedi#auto_initialization = 1
-"let g:jedi#completions_enabled = 0
-" this enables auto-complete from imports with ctrl-o
 let g:jedi#completions_enabled = 1
 let g:jedi#auto_vim_configuration = 1
-let g:jedi#smart_auto_mappings = 1
+" allows for import auto-complete pop-up
+let g:jedi#smart_auto_mappings = 1 
 let g:jedi#popup_on_dot = 1
-let g:jedi#completions_command = ""
+" this is kept with super-tab so it can do auto-complete with imports
+let g:jedi#completions_command = "<C-N>"
+" shows function arguments
 let g:jedi#show_call_signatures = "2"
-let g:jedi#show_call_signatures_delay = 1
+" removes document strings pop-up
+autocmd FileType python setlocal completeopt-=preview
 
-"let g:jedi#completions_enabled = 1
-"let g:jedi#auto_vim_configuration = 0
-"let g:jedi#smart_auto_mappings = 0
-"let g:jedi#popup_on_dot = 0
-"let g:jedi#completions_command = ""
-"let g:jedi#show_call_signatures = "2"
-"let g:jedi#show_call_signatures_delay = 0
 
 " Syntastic configuration
+"
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_python_checkers = ['pyflakes']
+let g:syntastic_check_on_wq = 1
+let g:syntastic_python_checkers = ['flake8']
+
+
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
 
 
 " Window
